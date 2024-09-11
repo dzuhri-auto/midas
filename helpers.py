@@ -1,6 +1,8 @@
 import json
+import time
 from datetime import datetime, timedelta, timezone
 from urllib.parse import unquote
+
 from tzlocal import get_localzone
 
 
@@ -93,3 +95,23 @@ def convert_to_local_and_unix(iso_time):
     local_dt = dt.astimezone(get_localzone())
     unix_time = int(local_dt.timestamp())
     return unix_time
+
+def next_midnight():
+    """
+    calculate the seconds remaining until 12:00 AM UTC
+    """
+
+    # Get the current time in UTC (seconds since epoch)
+    current_time = time.time()
+
+    # Get the current UTC time (struct_time)
+    utc_now = time.gmtime(current_time)
+
+    # Calculate the time for 12:00 AM UTC of the next day
+    # Extract the current year, month, and day, then add one day
+    next_midnight_utc = time.mktime((utc_now.tm_year, utc_now.tm_mon, utc_now.tm_mday + 1, 0, 0, 0, 0, 0, 0))
+
+    # Calculate the difference in seconds between now and next midnight
+    seconds_to_midnight = next_midnight_utc - current_time
+    
+    return seconds_to_midnight
